@@ -9,11 +9,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FillViewport;
+
 
 
 /**
@@ -34,6 +37,13 @@ public class TelaJogo extends TelaBase{
     private Boolean indoEsquerda;
     private Boolean indoCima;
     private Boolean indoBaixo;
+    private Boolean atirando;
+    private Array<Image> tiros = new Array<Image>();
+    private Texture texturaTiro;
+    private Texture texturaMeteoro1;
+    private Texture texturaMeteoro2;
+    private Array<Image> meteoros1 = new Array<Image>();
+    private Array<Image> meteoros2 = new Array<Image>();
 
     /**
      * Construtor padrao da tela do jogo
@@ -52,11 +62,21 @@ public class TelaJogo extends TelaBase{
         batch = new SpriteBatch();
         palco = new Stage(new FillViewport(camera.viewportWidth, camera.viewportHeight, camera));
 
+        initTexturas();
         initFonte();
         initInformacoes();
         initJogador();
     }
 
+    private void initTexturas() {
+        texturaTiro = new Texture("sprites/shot.png");
+        texturaMeteoro1 = new Texture("sprites/enemie-1.png");
+        texturaMeteoro2 = new Texture("sprites/enemie-2.png");
+    }
+
+    /**
+     * Instancia os objetos do jogador o adiciona no palco
+     */
     private void initJogador() {
 
         texturaJogador = new Texture("sprites/player.png");
@@ -71,11 +91,17 @@ public class TelaJogo extends TelaBase{
 
     }
 
+    /**
+     * Instancia os objetos de fonte
+     */
     private void initFonte() {
 
         fonte = new BitmapFont();
     }
 
+    /**
+     * instancia as informações na tela
+     */
     private void initInformacoes() {
         Label.LabelStyle lbEstilo = new Label.LabelStyle();
         lbEstilo.font = fonte;
@@ -97,15 +123,78 @@ public class TelaJogo extends TelaBase{
         lbPontuacao.setPosition(10, camera.viewportHeight - 20);
         capturaTeclas();
         atualizarJogador(delta);
+        atualizarTiros(delta);
+        atualixarMeteoros(delta);
 
+        // atualiza a situação do palco
         palco.act(delta);
+        // desenha o palco na tela
         palco.draw();
+    }
+
+    private void atualixarMeteoros(float delta) {
+        int tipo = MathUtils.random(1, 3);
+        if (tipo == 1) { // cria meteoro1
+            Image meteoro = new Image(texturaMeteoro1);
+            float x = MathUtils.random(0, camera.viewportWidth - meteoro.getMinWidth());
+            float y = MathUtils.random(camera.viewportHeight, camera.viewportHeight * 2);
+            meteoro.setPosition(x, y);
+            meteoros1.add(meteoro);
+            palco.addActor(meteoro);
+
+        }else { // cria meteoro1
+
+        }
+
+        float velocidade = 200;
+        for (Image meteoro : meteoros1) {
+            float x = meteoro.getX();
+            float y = meteoro.getY() - velocidade * delta;
+            meteoro.setPosition(x, y);
+
+        }
+
+    }
+
+    private  float intervaloTiros = 0;
+    private final float min_intervalo_tiros = 0.3f; //tempo minimo entre os tiros
+
+    private void atualizarTiros(float delta) {
+        intervaloTiros = intervaloTiros + delta; //acumula o tempo percorrido
+        //cria um novo tiro se necessario
+        if (atirando) {
+            if (intervaloTiros >= min_intervalo_tiros) {
+                Image tiro = new Image(texturaTiro);
+                float x = jogador.getX() + jogador.getWidth() / 2 - tiro.getWidth() / 2;
+                float y = jogador.getY() + jogador.getHeight();
+                tiro.setPosition(x, y);
+
+                tiros.add(tiro);
+                palco.addActor(tiro);
+                intervaloTiros = 0;
+            }
+        }
+        float velocidade = 200; // velocidade de movimentação do tiro
+        for (Image tiro : tiros) {
+            //movimenta o tiro em direção ao topo
+            float x = tiro.getX();
+            float y = tiro.getY() + velocidade * delta;
+            tiro.setPosition(x, y);
+            //remove os tiros que sairam da tela
+            if (tiro.getY() > camera.viewportHeight) {
+                tiros.removeValue(tiro, true); //remove da lista
+                tiro.remove(); //remove do palco
+
+            }
+        }
+
     }
 
     private void atualizarJogador(float delta) {
 
         float velocidade = 200;
         if (indoDireita) {
+            //verifica  se o jogador esta dentro da tela
             if (jogador.getX() < camera.viewportWidth - jogador.getImageWidth()){
                 float x = jogador.getX() + velocidade * delta;
                 float y = jogador.getY();
@@ -113,6 +202,7 @@ public class TelaJogo extends TelaBase{
             }
         }
         if (indoEsquerda) {
+            //verifica  se o jogador esta dentro da tela
             if (jogador.getX() > 0) {
                 float x = jogador.getX() - velocidade * delta;
                 float y = jogador.getY();
@@ -145,6 +235,7 @@ public class TelaJogo extends TelaBase{
         indoEsquerda = false;
         indoCima = false;
         indoBaixo = false;
+        atirando = false;
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 
@@ -163,6 +254,10 @@ public class TelaJogo extends TelaBase{
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 
             indoBaixo = true;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+
+            atirando = true;
         }
     }
 
@@ -204,5 +299,8 @@ public class TelaJogo extends TelaBase{
         texturaJogador.dispose();
         texturaJogadorDireita.dispose();
         texteraJogadorEsquerda.dispose();
+        texturaTiro.dispose();
+        texturaMeteoro1.dispose();
+        texturaMeteoro2.dispose();
     }
 }
