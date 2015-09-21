@@ -20,7 +20,7 @@ public class TelaMenu extends TelaBase {
     private Stage palco;
     private ImageTextButton btnIniciar;
     private Label lbTitulo;
-    private Label lbPontuação;
+    private Label lbPontuaÃ§Ã£o;
 
     private BitmapFont fonteTitulo;
     private BitmapFont fonteBotoes;

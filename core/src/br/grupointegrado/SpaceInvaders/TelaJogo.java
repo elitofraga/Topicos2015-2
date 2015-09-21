@@ -144,7 +144,7 @@ public class TelaJogo extends TelaBase{
     }
 
     /**
-     * instancia as informações na tela
+     * instancia as informaÃ§Ãµes na tela
      */
     private void initInformacoes() {
         Label.LabelStyle lbEstilo = new Label.LabelStyle();
@@ -162,7 +162,7 @@ public class TelaJogo extends TelaBase{
     }
 
     /**
-     * Chamado a todo quadro de atualização do jogo (FPS)
+     * Chamado a todo quadro de atualizaÃ§Ã£o do jogo (FPS)
      * @param delta tempo entre um quadro e outro em segundos
      */
     @Override
@@ -180,7 +180,7 @@ public class TelaJogo extends TelaBase{
         if (gameOver == false) {
             if (!musicaFundo.isPlaying()) //se nao esta tocando
                 musicaFundo.play();// inicia a musica
-                // capturaTeclas();
+            capturaTeclas();
             atualizarJogador(delta);
             atualizarTiros(delta);
             atualizarMeteoros(delta);
@@ -191,7 +191,7 @@ public class TelaJogo extends TelaBase{
                 musicaFundo.stop();// para a musica
             }
         }
-        // atualiza a situação do palco
+        // atualiza a situaÃ§Ã£o do palco
         palco.act(delta);
         // desenha o palco na tela
         palco.draw();
@@ -290,7 +290,7 @@ public class TelaJogo extends TelaBase{
         for (Image meteoro : meteoros1) {
             float x = meteoro.getX();
             float y = meteoro.getY() - velocidade1 * delta;
-            meteoro.setPosition(x, y); //atualiza a posição do meteoro
+            meteoro.setPosition(x, y); //atualiza a posiÃ§Ã£o do meteoro
             if (meteoro.getY() + meteoro.getHeight() < 0) {
                 meteoro.remove(); //remove do palco
                 meteoros1.removeValue(meteoro, true); //remove da lista
@@ -301,7 +301,7 @@ public class TelaJogo extends TelaBase{
         for (Image meteoro : meteoros2) {
             float x = meteoro.getX();
             float y = meteoro.getY() - velocidade2 * delta;
-            meteoro.setPosition(x, y); //atualiza a posição do meteoro
+            meteoro.setPosition(x, y); //atualiza a posiÃ§Ã£o do meteoro
             if (meteoro.getY() + meteoro.getHeight() < 0) {
                 meteoro.remove(); //remove do palco
                 meteoros2.removeValue(meteoro, true); //remove da lista
@@ -329,9 +329,9 @@ public class TelaJogo extends TelaBase{
                 somTiro.play();
             }
         }
-        float velocidade = 200; // velocidade de movimentação do tiro
+        float velocidade = 200; // velocidade de movimentaÃ§Ã£o do tiro
         for (Image tiro : tiros) {
-            //movimenta o tiro em direção ao topo
+            //movimenta o tiro em direÃ§Ã£o ao topo
             float x = tiro.getX();
             float y = tiro.getY() + velocidade * delta;
             tiro.setPosition(x, y);
@@ -417,7 +417,7 @@ public class TelaJogo extends TelaBase{
     }
 
     /**
-     * É chamado sempre que ja uma atualizaçõa no tamanho da tela
+     * Ã‰ chamado sempre que ja uma atualizaÃ§Ãµa no tamanho da tela
      * @param width novo valor da altura da tela
      * @param height novo valor da largura da tela
      */
@@ -428,7 +428,7 @@ public class TelaJogo extends TelaBase{
     }
 
     /**
-     * É chamado sempre que o jogo for minimizado
+     * Ã‰ chamado sempre que o jogo for minimizado
      */
     @Override
     public void pause() {
@@ -437,7 +437,7 @@ public class TelaJogo extends TelaBase{
 
 
     /**
-     * É chamado sempre que o jogo voltar para o primeiro plano
+     * Ã‰ chamado sempre que o jogo voltar para o primeiro plano
      */
     @Override
     public void resume() {
@@ -445,7 +445,7 @@ public class TelaJogo extends TelaBase{
     }
 
     /**
-     * É chamado quando a tela for destruida
+     * Ã‰ chamado quando a tela for destruida
      */
     @Override
     public void dispose() {
