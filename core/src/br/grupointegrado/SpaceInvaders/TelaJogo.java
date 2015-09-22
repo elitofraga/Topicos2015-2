@@ -2,6 +2,7 @@ package br.grupointegrado.SpaceInvaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
@@ -190,6 +191,7 @@ public class TelaJogo extends TelaBase{
             if (musicaFundo.isPlaying()) {//se esta tocando
                 musicaFundo.stop();// para a musica
             }
+            reiniciarJogo();
         }
         // atualiza a situação do palco
         palco.act(delta);
@@ -198,6 +200,19 @@ public class TelaJogo extends TelaBase{
         //desenha palco de informacoes
         palcoInformacoes.act(delta);
         palcoInformacoes.draw();
+    }
+
+    private void reiniciarJogo() {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            Preferences preferencias = Gdx.app.getPreferences("SpaceInvaders");
+            int pontuacaoMaxima = preferencias.getInteger("pontuacao_maxima", 0);
+            //verifico se minha pontuacao atual e maior que pontuacao maxima
+            if (pontuacao > pontuacaoMaxima) {
+                preferencias.putInteger("pontuacao_maxima", pontuacao);
+                preferencias.flush();
+            }
+            game.setScreen(new TelaMenu(game));
+        }
     }
 
     private void atualizarExplosoes(float delta) {
@@ -294,6 +309,7 @@ public class TelaJogo extends TelaBase{
             if (meteoro.getY() + meteoro.getHeight() < 0) {
                 meteoro.remove(); //remove do palco
                 meteoros1.removeValue(meteoro, true); //remove da lista
+                pontuacao = pontuacao - 30;
             }
         }
 
@@ -305,6 +321,8 @@ public class TelaJogo extends TelaBase{
             if (meteoro.getY() + meteoro.getHeight() < 0) {
                 meteoro.remove(); //remove do palco
                 meteoros2.removeValue(meteoro, true); //remove da lista
+
+                pontuacao = pontuacao - 60;
             }
         }
 
